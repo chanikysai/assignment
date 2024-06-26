@@ -1,6 +1,6 @@
 # Setting up Kubernetes with Minikube and Jenkins
 
-This guide, prepared by Venkatsai, will walk you through setting up Kubernetes using Minikube on your local machine, deploying Jenkins using Helm, and configuring a local Docker registry using Docker Compose.
+This guide, this prepared by Venkatsai, will walk you through setting up Kubernetes using Minikube on my local machine, deploying Jenkins using Helm, and configuring a local Docker registry using Docker Compose.
 
 ## Prerequisites
 
@@ -76,8 +76,7 @@ venkatsai@venkats-MacBook-Air ~ % kubectl exec --namespace jenkins -it svc/jenki
 ojZItPrqD5SzoLEuGZyP1i
 
 
-Retrieve the Jenkins admin passwo
-rd using the command above. Then, set up port forwarding to access the Jenkins UI:
+Retrieve the Jenkins admin password using the command above. Then, set up port forwarding to access the Jenkins UI:
 
 
 venkatsai@venkats-MacBook-Air ~ % kubectl --namespace jenkins port-forward svc/jenkins 8080:8080
@@ -225,9 +224,12 @@ pipeline {
 
 ![Screenshot](jenkins.png)
 
-Whenever the new build has been triggered it is launching new pod in kubernetes
-
+Step 6: Whenever the new build has been triggered it is launching new pod in kubernetes
 ![Screenshot](agentpod.png)
+
+![Screenshot](docker_registry.png)
+
+
 
 
 
