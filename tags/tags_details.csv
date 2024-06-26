@@ -1,2 +1,11 @@
 Instance ID,Hostname,Department,New Department
 i-08980ed4c344a1654,webserver01,Backend,saii
+instance-id,webserver01,Backend,saii
+instance-id,webserver01,Backend,Frontend
+instance-idwebserver02,Frontend,Frontend
+instance-id,database04,QA,Backend
+instance-id,ansible,Devops,Backend
+instance-id,scanner,<no-value>,Devops
+instance-id,activedirectory02,ITops,ITops
+instance-id,database03,Frontend,Backend
+instance-id,jenkins,<no-value>,Devops
