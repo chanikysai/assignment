@@ -10,7 +10,6 @@ This guide, this prepared by Venkatsai, will walk you through setting up Kuberne
 4. **kubectl**: Install kubectl to interact with Kubernetes clusters.
 
 ## Step 1: Starting Minikube
-## Step 1: Starting Minikube
 
 ```bash
 venkatsai@venkats-MacBook-Air ~ % minikube start
@@ -29,12 +28,13 @@ venkatsai@venkats-MacBook-Air ~ % minikube start
 
 
 ##  Step 2: Verifying Minikube Node
-
+```bash
 
 venkatsai@venkats-MacBook-Air ~ % kubectl get nodes -o wide
 NAME       STATUS   ROLES           AGE    VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION    CONTAINER-RUNTIME
 minikube   Ready    control-plane   200d   v1.27.4   192.168.49.2   <none>        Ubuntu 22.04.2 LTS   6.6.31-linuxkit   docker://24.0.4
 
+```
 
 
 This output confirms that Minikube is running and Kubernetes cluster components are verified.
@@ -42,6 +42,7 @@ This output confirms that Minikube is running and Kubernetes cluster components 
 
 
 ## Step 3: Installing Helm and Jenkins
+```bash
 Adding Helm Repository for Jenkins
 
 venkatsai@venkats-MacBook-Air ~ % helm repo add jenkins https://charts.jenkins.io
@@ -97,9 +98,12 @@ Handling connection for 8080
 
 ![Screenshot](kubectl.png)
 
-
+```
 
 ## Step 4: Setting up Docker Registry using Docker Compose
+
+```bash
+
 Docker Compose Configuration
 Create a docker-compose.yml file with the following content:
 version: "3"
@@ -131,9 +135,11 @@ venkatsai@venkats-MacBook-Air ~ % cd compose
 venkatsai@venkats-MacBook-Air compose % vi docker-compose.yml
 venkatsai@venkats-MacBook-Air compose % docker-compose up -d
 
-
+```
 
 ## Step 5: Jenkins Pipeline for Docker Image Build and Push
+```bash
+
 Jenkinsfile Configuration
 Add the following Jenkins Pipeline script (Jenkinsfile):
 
@@ -226,12 +232,15 @@ pipeline {
 
 ![Screenshot](jenkins.png)
 
+```
+
 ## Step 6: Whenever the new build has been triggered it is launching new pod in kubernetes
+```bash
 ![Screenshot](agentpod.png)
 
 ![Screenshot](docker_registry.png)
 
 
-
+```
 
 
