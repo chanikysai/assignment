@@ -24,35 +24,38 @@ venkatsai@venkats-MacBook-Air ~ % minikube start
     ▪ Using image gcr.io/k8s-minikube/storage-provisioner:v5
   Enabled addons: storage-provisioner, default-storageclass
   Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+```
 
 
-
-Step 2: Verifying Minikube Node
-
+##  Step 2: Verifying Minikube Node
+```bash
 
 venkatsai@venkats-MacBook-Air ~ % kubectl get nodes -o wide
 NAME       STATUS   ROLES           AGE    VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION    CONTAINER-RUNTIME
 minikube   Ready    control-plane   200d   v1.27.4   192.168.49.2   <none>        Ubuntu 22.04.2 LTS   6.6.31-linuxkit   docker://24.0.4
 
+```
 
 
 This output confirms that Minikube is running and Kubernetes cluster components are verified.
 
 
 
-Step 3: Installing Helm and Jenkins
+## Step 3: Installing Helm and Jenkins
+```bash
 Adding Helm Repository for Jenkins
 
 venkatsai@venkats-MacBook-Air ~ % helm repo add jenkins https://charts.jenkins.io
 "jenkins" already exists with the same configuration, skipping
 
-Updating Helm Repositories
+## Updating Helm Repositories
+
 venkatsai@venkats-MacBook-Air ~ % helm repo update
 Hang tight while we grab the latest from your chart repositories...
 ...Successfully got an update from the "jenkins" chart repository
 Update Complete. ⎈Happy Helming!⎈
 
-Installing Jenkins via Helm
+## Installing Jenkins via Helm
 
 venkatsai@venkats-MacBook-Air ~ % helm install jenkins -n jenkins jenkins/jenkins
 NAME: jenkins
@@ -62,7 +65,7 @@ STATUS: deployed
 REVISION: 1
 
 
-Verifying Jenkins Installation
+## Verifying Jenkins Installation
 
 venkatsai@venkats-MacBook-Air ~ % kubectl get pods -n jenkins
 NAME                 READY   STATUS   RESTARTS   AGE
@@ -70,13 +73,13 @@ jenkins-0            2/2     Running   7          11h
 
 
 
-Accessing Jenkins
+## Accessing Jenkins
 
 venkatsai@venkats-MacBook-Air ~ % kubectl exec --namespace jenkins -it svc/jenkins -c jenkins -- /bin/cat /run/secrets/additional/chart-admin-password && echo
 ojZItPrqD5SzoLEuGZyP1i
 
 
-Retrieve the Jenkins admin password using the command above. Then, set up port forwarding to access the Jenkins UI:
+## Retrieve the Jenkins admin password using the command above. Then, set up port forwarding to access the Jenkins UI:
 
 
 venkatsai@venkats-MacBook-Air ~ % kubectl --namespace jenkins port-forward svc/jenkins 8080:8080
@@ -90,14 +93,17 @@ Handling connection for 8080
 Handling connection for 8080
 
 
-Access Jenkins by navigating to http://127.0.0.1:8080 in your web browser.
+## Access Jenkins by navigating to http://127.0.0.1:8080 in your web browser.
 
 
 ![Screenshot](kubectl.png)
 
+```
 
+## Step 4: Setting up Docker Registry using Docker Compose
 
-Step 4: Setting up Docker Registry using Docker Compose
+```bash
+
 Docker Compose Configuration
 Create a docker-compose.yml file with the following content:
 version: "3"
@@ -121,7 +127,7 @@ services:
       ENV_DOCKER_REGISTRY_HOST: docker-registry
       ENV_DOCKER_REGISTRY_PORT: 5000
 
-Starting Docker Registry
+## Starting Docker Registry
 
 
 venkatsai@venkats-MacBook-Air ~ % mkdir compose
@@ -129,16 +135,11 @@ venkatsai@venkats-MacBook-Air ~ % cd compose
 venkatsai@venkats-MacBook-Air compose % vi docker-compose.yml
 venkatsai@venkats-MacBook-Air compose % docker-compose up -d
 
+```
 
-venkatsai@venkats-MacBook-Air assignment % docker ps   
-CONTAINER ID   IMAGE                                      COMMAND                  CREATED        STATUS                          PORTS                                                                                                                                  NAMES
-b5eff803d0d7   registry:2                                 "/entrypoint.sh /etc…"   2 hours ago   Up 2 hours                     0.0.0.0:5001->5000/tcp                                                                                                                 registry
-52fa5fed921c   konradkleine/docker-registry-frontend:v2   "/bin/sh -c $START_S…"   2 hours ago   Up 2 hours                     443/tcp, 0.0.0.0:8080->80/tcp ago                                                                                                                                          registry_ui
+## Step 5: Jenkins Pipeline for Docker Image Build and Push
+```bash
 
-
-
-
-Step 5: Jenkins Pipeline for Docker Image Build and Push
 Jenkinsfile Configuration
 Add the following Jenkins Pipeline script (Jenkinsfile):
 
@@ -231,12 +232,11 @@ pipeline {
 
 ![Screenshot](jenkins.png)
 
-Step 6: Whenever the new build has been triggered it is launching new pod in kubernetes
+```
+
+## Step 6: Whenever the new build has been triggered it is launching new pod in kubernetes
+```bash
 ![Screenshot](agentpod.png)
 
 ![Screenshot](docker_registry.png)
-
-
-
-
-
+```
