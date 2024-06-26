@@ -130,6 +130,13 @@ venkatsai@venkats-MacBook-Air compose % vi docker-compose.yml
 venkatsai@venkats-MacBook-Air compose % docker-compose up -d
 
 
+venkatsai@venkats-MacBook-Air assignment % docker ps   
+CONTAINER ID   IMAGE                                      COMMAND                  CREATED        STATUS                          PORTS                                                                                                                                  NAMES
+b5eff803d0d7   registry:2                                 "/entrypoint.sh /etc…"   2 hours ago   Up 2 hours                     0.0.0.0:5001->5000/tcp                                                                                                                 registry
+52fa5fed921c   konradkleine/docker-registry-frontend:v2   "/bin/sh -c $START_S…"   2 hours ago   Up 2 hours                     443/tcp, 0.0.0.0:8080->80/tcp ago                                                                                                                                          registry_ui
+
+
+
 
 Step 5: Jenkins Pipeline for Docker Image Build and Push
 Jenkinsfile Configuration
