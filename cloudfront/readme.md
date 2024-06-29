@@ -1,101 +1,99 @@
-Setting Up CloudFront Distribution for Secure Access to S3 Files
-This guide outlines the steps to configure a CloudFront distribution to securely serve public and private files from an AWS S3 bucket (acme-downloads), while meeting specific access control and security requirements.
+# CloudFront Distribution Setup for Secure S3 File Access
 
-Step-by-Step Instructions
-1. Configure S3 Bucket
-Create an S3 bucket named acme-downloads.
+This repository provides a step-by-step guide to configure an AWS CloudFront distribution to securely serve public and private files from an S3 bucket (`acme-downloads`). This configuration includes access control, HTTPS enforcement, logging, and pre-signed URL generation.
 
-Inside the bucket, create two folders:
+## Table of Contents
+- [Prerequisites](#prerequisites)
+- [Setup Instructions](#setup-instructions)
+  - [1. Configure S3 Bucket](#1-configure-s3-bucket)
+  - [2. Create IAM Policy for CloudFront Access](#2-create-iam-policy-for-cloudfront-access)
+  - [3. Create CloudFront Distribution](#3-create-cloudfront-distribution)
+  - [4. Enable Logging](#5-enable-logging)
+  - [5. Test the Configuration](#6-test-the-configuration)
+  - [6. Maintain and Monitor](#7-maintain-and-monitor)
+- [Conclusion](#conclusion)
 
-public
-private
-2. Create IAM Policy for CloudFront Access
-Create an IAM policy allowing CloudFront to access objects in the acme-downloads bucket. Use the example policy below:
+## Prerequisites
+- AWS account with administrative access.
+- AWS CLI configured on your local machine.
+- Python environment with `boto3` installed for generating pre-signed URLs.
 
-{
-    "Version": "2012-10-17",
-    "Statement": {
-        "Sid": "AllowCloudFrontServicePrincipalReadOnly",
-        "Effect": "Allow",
-        "Principal": {
-            "Service": "cloudfront.amazonaws.com"
-        },
-        "Action": "s3:GetObject",
-        "Resource": "arn:aws:s3:::acme-downloads/*",
-        "Condition": {
-            "StringEquals": {
-                "AWS:SourceArn": "arn:aws:cloudfront::111122223333:distribution/<CloudFront distribution ID>"
-            }
-        }
-    }
-}
+## Setup Instructions
 
+### 1. Configure S3 Bucket
+```bash
 
+1. Create an S3 bucket named `acme-downloads`.
+2. Inside the bucket, create two folders:
+   - `public`
+   - `private`
+
+```
+### 2. Create IAM Policy for CloudFront Access attch in s3 bucket
+```bash
+
+1. Create a file named `cloudfront-access-policy.json` with the following content:
+   ```json
+   {
+       "Version": "2008-10-17",
+       "Id": "PolicyForCloudFrontPrivateContent",
+       "Statement": [
+           {
+               "Sid": "AllowCloudFrontServicePrincipal",
+               "Effect": "Allow",
+               "Principal": {
+                   "Service": "cloudfront.amazonaws.com"
+               },
+               "Action": "s3:GetObject",
+               "Resource": "arn:aws:s3:::acme-downloads/*",
+               "Condition": {
+                   "StringEquals": {
+                       "AWS:SourceArn": "arn:aws:cloudfront::<ACCOUNT_ID>:distribution/<DISTRIBUTION_ID>"
+                   }
+               }
+           }
+       ]
+   }
 
 Attach this policy to the S3 bucket acme-downloads.
+ ```
 
-3. Create CloudFront Distribution
-Go to the CloudFront console and create a new distribution.
+## 3. Create CloudFront Distribution
+```bash
+    Go to the CloudFront console and create a new distribution.
+    Set the S3 bucket acme-downloads as the origin.
+    Configure the distribution settings:
+    Enable HTTPS for secure access.
+    Redirect HTTP to HTTPS.
+```
 
-Set the S3 bucket acme-downloads as the origin.
+## 4. Create IAM Users
+```bash
 
-Configure the distribution settings:
+1. Create IAM users for Rob and Mark.
 
-Enable HTTPS for secure access.
-Redirect HTTP to HTTPS.
-4. Configure Access Control
-Public Folder Access
-Configure the public folder to allow public access via the CloudFront distribution.
-Private Folder Access
-Block public access to the private folder by default.
+2. Attach Policies for S3 and CloudFront Access
+3. Create and attach a custom policy that grants full access to the acme-downloads S3 bucket and CloudFront distributions.
 
-Create two IAM users, Rob and Mark, and grant them S3 access permissions.
+```
 
-Use pre-signed URLs to grant temporary access to specific files in the private folder. Rob and Mark can generate these URLs to share access to private files.
+## 5. Generate a Presigned URL
 
-5. Enable Logging
-Create an S3 bucket named acme-downloads-logs to store CloudFront access logs.
+Generate a presigned URL to allow  to access a private S3 object and attempt to access the content.
 
-Configure CloudFront to log all access requests to this bucket.
 
-6. Test the Configuration
-Upload a sample file (sample.html) to both the public and private folders.
 
-Verify that the file in the public folder is accessible through the CloudFront URL.
+## 6. Enable Logging
 
-Generate a pre-signed URL for the file in the private folder and verify that it is accessible only through this URL.
+    Create an S3 bucket named acme-downloads-logs to store CloudFront access logs.
+    Configure CloudFront to log all access requests to this bucket.
 
-7. Maintain and Monitor
-Regularly review access logs stored in acme-downloads-logs to monitor access patterns and detect any unauthorized access attempts.
+## 7. Test the Configuration
 
-Periodically update IAM policies and CloudFront settings to adhere to the best security practices.
+    Upload a sample file (sample.html) to both the public and private folders.
+    Verify that the file in the public folder is accessible through the CloudFront URL.
+    Generate a pre-signed URL for the  in the private folder and verify that it is accessible only through this URL.
 
-Example Commands and Scripts
-Create IAM Policy
-bash
-Copy code
-aws iam create-policy --policy-name AllowCloudFrontAccess --policy-document file://cloudfront-access-policy.json
-Create Pre-signed URL
-python
-Copy code
-import boto3
-from botocore.exceptions import NoCredentialsError
 
-s3_client = boto3.client('s3')
-
-def generate_presigned_url(bucket_name, object_name, expiration=3600):
-    try:
-        response = s3_client.generate_presigned_url('get_object',
-                                                    Params={'Bucket': bucket_name, 'Key': object_name},
-                                                    ExpiresIn=expiration)
-    except NoCredentialsError:
-        print("Credentials not available.")
-        return None
-
-    return response
-
-# Example usage
-url = generate_presigned_url('acme-downloads', 'private/sample.html')
-print(url)
-Conclusion
-By following these steps, you can securely serve public and private files from your S3 bucket using CloudFront, ensuring that access is controlled and logged appropriately. This setup allows for flexible access management with pre-signed URLs and helps maintain security and compliance with access logging.
+## 8. Maintain and Monitor
+ 1. access logs stored in acme-downloads-logs to monitor access patterns and detect any unauthorized access attempts.
