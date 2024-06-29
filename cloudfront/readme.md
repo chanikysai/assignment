@@ -24,7 +24,7 @@ This repository provides a step-by-step guide to configure an AWS CloudFront dis
 ```bash
 
 1. Create an S3 bucket named `acme-downloads`.
-2. Inside the bucket, create two folders:
+2. Inside the bucket, create two folders :
    - `public`
    - `private`
 
