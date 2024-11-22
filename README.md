@@ -108,10 +108,6 @@ This document outlines the steps to deploy two sample applications on a Kubernet
         
         ```
 
-### 7 . Verify Application Access
-Test rate limiting by repeatedly accessing the endpoint:
-
-
 ### 8 . Logging and Header Configuration
 
     The NGINX Ingress Controller is configured to log the X-Client-Id header for each request. Confirm this in the logs:
@@ -126,14 +122,16 @@ Test rate limiting by repeatedly accessing the endpoint:
 
 
 ### File List
+    ```
         app1-deployment.yml: Deployment and Service definition for App1.
         app2-deployment.yml: Deployment and Service definition for App2.
-        nginx-ingress.yaml: Ingress configuration for routing and rate limiting.
+        nginx-ingress.yaml & nginx-config.yaml: Ingress configuration for routing and rate limiting and logging.
         README.md: Documentation for the setup.
-
+    ```
 
 ### Notes
-    The example assumes the nginx-ingress is exposed on http://localhost. Update the address as per your setup.
+    ```
+    The document show us how  the nginx-ingress is exposed on http://localhost. 
     Adjust annotations in the nginx-ingress.yaml file to suit specific requirements (e.g., rate limits, headers).
     Ensure that all required backend services (app1-service and app2-service) are healthy and accessible before configuring the ingress.
-
+    ```
